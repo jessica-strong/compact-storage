@@ -34,7 +34,7 @@ subprojects {
 var buildNumber = System.getenv("BUILD_NUMBER")
 
 if(buildNumber == null) {
-    buildNumber = "65"
+    buildNumber = "66"
 }
 
 allprojects {
@@ -42,6 +42,9 @@ allprojects {
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
+    base {
+        archivesName="$rootProject.mod_id-$rootProject.minecraft_version-$project.name"
+    }
     version = rootProject.mod_version + "." + buildNumber
     group = rootProject.maven_group
 
