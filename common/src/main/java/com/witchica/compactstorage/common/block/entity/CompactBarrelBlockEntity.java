@@ -1,9 +1,7 @@
 package com.witchica.compactstorage.common.block.entity;
 
 import com.witchica.compactstorage.CompactStorage;
-import com.witchica.compactstorage.CompactStoragePlatform;
 import com.witchica.compactstorage.common.block.CompactBarrelBlock;
-import com.witchica.compactstorage.common.block.DrumBlock;
 import com.witchica.compactstorage.common.screen.CompactChestScreenHandler;
 import com.witchica.compactstorage.common.util.CompactStorageInventoryImpl;
 
@@ -11,6 +9,7 @@ import com.witchica.compactstorage.common.util.CompactStorageUpgradeType;
 import com.witchica.compactstorage.common.util.CompactStorageUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,7 +24,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -120,21 +118,21 @@ public class CompactBarrelBlockEntity extends RandomizableContainerBlockEntity i
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
 
         this.inventoryWidth = nbt.contains("inventory_width") ? nbt.getInt("inventory_width") : 9;
         this.inventoryHeight = nbt.contains("inventory_height") ? nbt.getInt("inventory_height") : 3;
         this.retaining = nbt.contains("retaining") && nbt.getBoolean("retaining");
 
         this.inventory = NonNullList.withSize(inventoryWidth * inventoryHeight, ItemStack.EMPTY);
-        CompactStorageUtil.readItemsFromTag(inventory, nbt);
+        CompactStorageUtil.readItemsFromTag(inventory, nbt, registries);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        CompactStorageUtil.writeItemsToTag(inventory, nbt);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        CompactStorageUtil.writeItemsToTag(inventory, nbt, registries);
 
         nbt.putInt("inventory_width", inventoryWidth);
         nbt.putInt("inventory_height", inventoryHeight);
@@ -148,8 +146,8 @@ public class CompactBarrelBlockEntity extends RandomizableContainerBlockEntity i
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, CompactBarrelBlockEntity compactChestBlockEntity) {

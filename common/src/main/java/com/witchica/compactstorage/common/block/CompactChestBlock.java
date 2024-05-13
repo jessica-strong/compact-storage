@@ -170,13 +170,13 @@ public class CompactChestBlock extends BaseEntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        CompactStorageUtil.dropContents(world, pos, state.getBlock(), player);
+        CompactStorageUtil.dropContents(world, pos, state.getBlock(), player, registries);
         return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
     public void onExplosionHit(BlockState state, Level world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
-        CompactStorageUtil.dropContents(world, pos, this, null);
+        CompactStorageUtil.dropContents(world, pos, this, null, registries);
         super.onExplosionHit(state, world, pos, explosion, stackMerger);
     }
 

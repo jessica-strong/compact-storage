@@ -5,6 +5,8 @@ import com.witchica.compactstorage.CompactStoragePlatform;
 import com.witchica.compactstorage.common.block.CompactBarrelBlock;
 import com.witchica.compactstorage.common.block.DrumBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
@@ -102,22 +104,24 @@ public class DrumBlockEntity extends BlockEntity {
         return hasAnyItems() ? inventory.countItem(getStoredType()) : 0;
     }
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.put("Inventory", inventory.createTag());
-        nbt.put("ClientItem", new ItemStack(getStoredType(), 1).save(new CompoundTag()));
-        nbt.putInt("ClientStackSize", getStoredType().getMaxStackSize());
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        nbt.put("Inventory", inventory.createTag(registries));
+
+        nbt.put("ClientItem", new ItemStack(getStoredType(), 1).save(registries));
+        nbt.putInt("ClientStackSize", getStoredType().getDefaultMaxStackSize());
         nbt.putInt("ClientStoredItems", getTotalItemCount());
+
         nbt.putBoolean("Retaining", retaining);
         nbt.putInt("Version", 1);
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        inventory.fromTag(nbt.getList("Inventory", Tag.TAG_COMPOUND));
+    public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
+        inventory.fromTag(nbt.getList("Inventory", Tag.TAG_COMPOUND), registries);
 
-        this.clientItem = ItemStack.of(nbt.getCompound("ClientItem"));
+        this.clientItem = ItemStack.parseOptional(registries, nbt.getCompound("ClientItem"));
         this.clientStackSize = nbt.getInt("ClientStackSize");
         this.clientStoredItems = nbt.getInt("ClientStoredItems");
         this.retaining = nbt.getBoolean("Retaining");
@@ -130,8 +134,8 @@ public class DrumBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
     }
 
     @Override

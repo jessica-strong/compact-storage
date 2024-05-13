@@ -6,24 +6,19 @@ import com.witchica.compactstorage.CompactStoragePlatform;
 import com.witchica.compactstorage.common.block.entity.CompactBarrelBlockEntity;
 import com.witchica.compactstorage.common.item.StorageUpgradeItem;
 import com.witchica.compactstorage.common.screen.CompactStorageMenuProvider;
-import com.witchica.compactstorage.common.util.CompactStorageUpgradeType;
 import com.witchica.compactstorage.common.util.CompactStorageUtil;
-import dev.architectury.registry.menu.ExtendedMenuProvider;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeItem;
@@ -162,13 +157,13 @@ public class CompactBarrelBlock extends BaseEntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        CompactStorageUtil.dropContents(world, pos, state.getBlock(), player);
+        CompactStorageUtil.dropContents(world, pos, state.getBlock(), player, registries);
         return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
     public void onExplosionHit(BlockState state, Level world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
-        CompactStorageUtil.dropContents(world, pos, this, null);
+        CompactStorageUtil.dropContents(world, pos, this, null, registries);
         super.onExplosionHit(state, world, pos, explosion, stackMerger);
     }
 

@@ -3,7 +3,9 @@ package com.witchica.compactstorage.common.inventory;
 import com.witchica.compactstorage.common.util.CompactStorageInventoryImpl;
 import com.witchica.compactstorage.common.util.CompactStorageUpgradeType;
 import com.witchica.compactstorage.common.util.CompactStorageUtil;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,8 +15,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 public class BackpackInventory implements Container, CompactStorageInventoryImpl  {
+    private final HolderLookup.Provider registries;
     public NonNullList<ItemStack> items;
     public int inventoryWidth;
     public int inventoryHeight;
@@ -23,12 +27,13 @@ public class BackpackInventory implements Container, CompactStorageInventoryImpl
     private final int backpackSlot;
     private final boolean isInOffhand;
 
-    public BackpackInventory(CompoundTag itemsNbt, Player player, boolean isInOffhand) {
+    public BackpackInventory(CompoundTag itemsNbt, Player player, boolean isInOffhand, HolderLookup.Provider registries) {
         this.backpackSlot = player.getInventory().selected;
         this.player = player;
         this.isInOffhand = isInOffhand;
+        this.registries = registries;
 
-        this.fromTag(itemsNbt);
+        this.fromTag(itemsNbt, registries);
     }
 
 
@@ -106,12 +111,12 @@ public class BackpackInventory implements Container, CompactStorageInventoryImpl
         return true;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
         this.inventoryWidth = tag.contains("inventory_width") ? tag.getInt("inventory_width") : 9;
         this.inventoryHeight = tag.contains("inventory_height") ? tag.getInt("inventory_height") : 6;
         
         this.items = NonNullList.withSize(inventoryWidth * inventoryHeight, ItemStack.EMPTY);
-        CompactStorageUtil.readItemsFromTag(this.items, tag);
+        CompactStorageUtil.readItemsFromTag(this.items, tag, registries);
     }
 
     @Override
@@ -168,12 +173,12 @@ public class BackpackInventory implements Container, CompactStorageInventoryImpl
         return false;
     }
 
-    public CompoundTag toTag() {
+    public CompoundTag toTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("inventory_width", inventoryWidth);
         tag.putInt("inventory_height", inventoryHeight);
 
-        CompactStorageUtil.writeItemsToTag(this.items, tag);
+        CompactStorageUtil.writeItemsToTag(this.items, tag, registries);
 
         return tag;
     }
@@ -190,17 +195,15 @@ public class BackpackInventory implements Container, CompactStorageInventoryImpl
         Inventory inventory = player.getInventory();
 
         if(isInOffhand) {
-            if(!player.getItemInHand(InteractionHand.OFF_HAND).hasTag()) {
-                player.getItemInHand(InteractionHand.OFF_HAND).setTag(new CompoundTag());
-            }
+            CompoundTag tag = player.getItemInHand(InteractionHand.OFF_HAND).has(DataComponents.CUSTOM_DATA) ? player.getItemInHand(InteractionHand.OFF_HAND).get(DataComponents.CUSTOM_DATA).copyTag() : new CompoundTag();
+            tag.put("Backpack", toTag(registries));
 
-            player.getItemInHand(InteractionHand.OFF_HAND).getTag().put("Backpack", toTag());
+            player.getItemInHand(InteractionHand.OFF_HAND).set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         } else {
-            if(!inventory.getItem(backpackSlot).hasTag()) {
-                inventory.getItem(backpackSlot).setTag(new CompoundTag());
-            }
+            CompoundTag tag = inventory.getItem(backpackSlot).has(DataComponents.CUSTOM_DATA) ? inventory.getItem(backpackSlot).get(DataComponents.CUSTOM_DATA).copyTag() : new CompoundTag();
+            tag.put("Backpack", toTag(registries));
 
-            inventory.getItem(backpackSlot).getTag().put("Backpack", toTag());
+            inventory.getItem(backpackSlot).set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         }
         player.playNotifySound(SoundEvents.WOOL_BREAK, SoundSource.PLAYERS, 1f, 1f);
     }

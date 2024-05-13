@@ -2,6 +2,8 @@ package com.witchica.compactstorage.common.inventory;
 
 import com.witchica.compactstorage.common.screen.CompactChestScreenHandler;
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -12,6 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import javax.xml.crypto.Data;
 
 public class BackpackInventoryHandlerFactory implements MenuProvider {
     public InteractionHand hand;
@@ -24,25 +28,25 @@ public class BackpackInventoryHandlerFactory implements MenuProvider {
 
     @Override
     public Component getDisplayName() {
-        return backpackStack.hasCustomHoverName() ? backpackStack.getHoverName() : Component.translatable("container.compact_storage.backpack");
+        return backpackStack.has(DataComponents.CUSTOM_NAME) ? backpackStack.getHoverName() : Component.translatable("container.compact_storage.backpack");
     }
 
-    public static BackpackInventory getBackpackInventory(Player player, InteractionHand hand) {
+    public static BackpackInventory getBackpackInventory(Player player, InteractionHand hand, HolderLookup.Provider registries) {
         ItemStack backpackStack = player.getItemInHand(hand);
         boolean isInOffhand = hand == InteractionHand.OFF_HAND;
 
-        if(backpackStack.hasTag() && backpackStack.getTag().contains("Backpack")) {
-            CompoundTag backpackTag = backpackStack.getTag().getCompound("Backpack");
-            return new BackpackInventory(backpackTag, player, isInOffhand);
+        if(backpackStack.has(DataComponents.CUSTOM_DATA)) {
+            CompoundTag backpackTag = backpackStack.get(DataComponents.CUSTOM_DATA).copyTag().getCompound("Backpack");
+            return new BackpackInventory(backpackTag, player, isInOffhand, registries);
         } else {
-            return new BackpackInventory(new CompoundTag(), player, isInOffhand);
+            return new BackpackInventory(new CompoundTag(), player, isInOffhand, registries);
         }
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
-        BackpackInventory backpackInventory = getBackpackInventory(player, hand);
+        BackpackInventory backpackInventory = getBackpackInventory(player, hand, registries);
         return new CompactChestScreenHandler(syncId, inv, writeToByteBuf(new FriendlyByteBuf(Unpooled.buffer())));
     }
 

@@ -1,9 +1,12 @@
 package com.witchica.compactstorage.common.util;
 
 import com.witchica.compactstorage.common.block.entity.DrumBlockEntity;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,11 +41,11 @@ public class CompactStorageUtil {
          "bamboo"
     };
 
-    public static void appendTooltip(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag options, boolean isBackpack) {
+    public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag, boolean isBackpack) {
         int inventoryX = 9;
         int inventoryY = 6;
 
-        CompoundTag compound = stack.getTag();
+        CompoundTag compound = stack.get(DataComponents.CUSTOM_DATA).copyTag();
 
         if(isBackpack && compound != null) {
             compound = compound.getCompound("Backpack");
@@ -59,9 +62,11 @@ public class CompactStorageUtil {
         if(compound != null && compound.contains("retaining") && compound.getBoolean("retaining")) {
             tooltip.add(Component.translatable("tooltip.compact_storage.retaining").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD));
         }
+
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
     }
 
-    public static void dropContents(Level world, BlockPos pos, Block block, Player player) {
+    public static void dropContents(Level world, BlockPos pos, Block block, Player player, HolderLookup.Provider registries) {
         if(world.isClientSide) {
             return;
         }
@@ -78,15 +83,15 @@ public class CompactStorageUtil {
             chestTag.putBoolean("retaining", retaining);
 
             if(retaining) {
-                writeItemsToTag(inventory.getItemList(), chestTag);
+                writeItemsToTag(inventory.getItemList(), chestTag, registries);
             }
 
-            chestStack.setTag(chestTag);
+            chestStack.set(DataComponents.CUSTOM_DATA, CustomData.of(chestTag));
 
 
             if(inventory instanceof RandomizableContainerBlockEntity lootableContainerBlockEntity) {
                 if(lootableContainerBlockEntity.hasCustomName()) {
-                    chestStack.setHoverName(lootableContainerBlockEntity.getCustomName());
+                    chestStack.set(DataComponents.CUSTOM_NAME, lootableContainerBlockEntity.getCustomName());
                 }
             }
 
@@ -107,15 +112,15 @@ public class CompactStorageUtil {
             chestTag.putBoolean("Retaining", retaining);
 
             if(retaining) {
-                writeItemsToTag("Inventory", drumBlockEntity.inventory.getItems(), chestTag);
+                writeItemsToTag("Inventory", drumBlockEntity.inventory.getItems(), chestTag, registries);
 
                 if(drumBlockEntity.hasAnyItems()) {
-                    chestTag.put("TooltipItem", new ItemStack(drumBlockEntity.getStoredType(), 1).save(new CompoundTag()));
+                    chestTag.put("TooltipItem", new ItemStack(drumBlockEntity.getStoredType(), 1).save(registries));
                     chestTag.putInt("TooltipCount", drumBlockEntity.getTotalItemCount());
                 }
             }
 
-            drumStack.setTag(chestTag);
+            drumStack.set(DataComponents.CUSTOM_DATA, CustomData.of(chestTag));
 
             if(!retaining) {
                 Containers.dropContents(world, pos, drumBlockEntity.inventory);
@@ -130,19 +135,18 @@ public class CompactStorageUtil {
     }
 
 
-    public static void writeItemsToTag(NonNullList<ItemStack> inventory, CompoundTag tag) {
-        writeItemsToTag("Items", inventory, tag);
+    public static void writeItemsToTag(NonNullList<ItemStack> inventory, CompoundTag tag, HolderLookup.Provider registries) {
+        writeItemsToTag("Items", inventory, tag, registries);
     }
 
-    public static void writeItemsToTag(String tagName, NonNullList<ItemStack> inventory, CompoundTag tag) {
+    public static void writeItemsToTag(String tagName, NonNullList<ItemStack> inventory, CompoundTag tag, HolderLookup.Provider lookupProvider) {
         ListTag listTag = new ListTag();
 
         for(int i = 0; i < inventory.size(); ++i) {
             ItemStack itemStack = (ItemStack)inventory.get(i);
             if (!itemStack.isEmpty()) {
-                CompoundTag nbt = new CompoundTag();
+                CompoundTag nbt = (CompoundTag) itemStack.save(lookupProvider);
                 nbt.putInt("Slot", i);
-                itemStack.save(nbt);
                 listTag.add(nbt);
             }
         }
@@ -150,14 +154,14 @@ public class CompactStorageUtil {
         tag.put(tagName, listTag);
     }
 
-    public static void readItemsFromTag(NonNullList<ItemStack> inventory, CompoundTag tag) {
+    public static void readItemsFromTag(NonNullList<ItemStack> inventory, CompoundTag tag, HolderLookup.Provider lookupProvider) {
         ListTag listTag = tag.getList("Items", 10);
 
         for(int i = 0; i < listTag.size(); ++i) {
             CompoundTag compoundTag = listTag.getCompound(i);
             int j = compoundTag.getInt("Slot");
             if (j >= 0 && j < inventory.size()) {
-                inventory.set(j, ItemStack.of(compoundTag));
+                inventory.set(j, ItemStack.parseOptional(lookupProvider, compoundTag));
             }
         }
     }

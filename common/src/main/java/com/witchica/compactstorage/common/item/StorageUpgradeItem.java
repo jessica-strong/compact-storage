@@ -22,7 +22,7 @@ public class StorageUpgradeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
         if (stack.getItem() == CompactStorage.UPGRADE_COLUMN_ITEM.get()) {
             tooltip.add(Component.translatable("tooltip.compact_storage.column_upgrade_descriptor").withStyle(ChatFormatting.LIGHT_PURPLE));
             tooltip.add(Component.translatable("tooltip.compact_storage.upgrade_backpack").withStyle(ChatFormatting.DARK_PURPLE));
@@ -35,7 +35,7 @@ public class StorageUpgradeItem extends Item {
             tooltip.add(Component.translatable("tooltip.compact_storage.upgrade_retainer_description").withStyle(ChatFormatting.LIGHT_PURPLE));
             tooltip.add(Component.translatable("tooltip.compact_storage.new_item_description").withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC));
         }
-        super.appendHoverText(stack, world, tooltip, context);
+        super.appendHoverText(stack, context, tooltip, tooltipFlag);
     }
 
     public CompactStorageUpgradeType getUpgradeType() {

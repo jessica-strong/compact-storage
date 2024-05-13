@@ -14,7 +14,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.*;
 import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
@@ -240,13 +239,13 @@ public class DrumBlock extends BaseEntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
-        CompactStorageUtil.dropContents(level, blockPos, blockState.getBlock(), player);
+        CompactStorageUtil.dropContents(level, blockPos, blockState.getBlock(), player, registries);
         return super.playerWillDestroy(level, blockPos, blockState, player);
     }
 
     @Override
     public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
-        CompactStorageUtil.dropContents(level, pos, level.getBlockState(pos).getBlock(), null);
+        CompactStorageUtil.dropContents(level, pos, level.getBlockState(pos).getBlock(), null, registries);
         super.wasExploded(level, pos, explosion);
     }
 

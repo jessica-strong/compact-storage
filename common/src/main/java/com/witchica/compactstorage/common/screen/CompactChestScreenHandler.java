@@ -1,7 +1,6 @@
 package com.witchica.compactstorage.common.screen;
 
 import com.witchica.compactstorage.CompactStorage;
-import com.witchica.compactstorage.CompactStoragePlatform;
 import com.witchica.compactstorage.common.inventory.BackpackInventory;
 
 import com.witchica.compactstorage.common.inventory.BackpackInventoryHandlerFactory;
@@ -46,7 +45,7 @@ public class CompactChestScreenHandler extends AbstractContainerMenu {
             this.backpack = null;
         } else {
             InteractionHand hand = buf.readInt() == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            BackpackInventory backpackInventory = BackpackInventoryHandlerFactory.getBackpackInventory(playerInventory.player, hand);
+            BackpackInventory backpackInventory = BackpackInventoryHandlerFactory.getBackpackInventory(playerInventory.player, hand, registries);
             this.inventory = (Container) backpackInventory;
             this.inventoryWidth = backpackInventory.inventoryWidth;
             this.inventoryHeight = backpackInventory.inventoryHeight;
