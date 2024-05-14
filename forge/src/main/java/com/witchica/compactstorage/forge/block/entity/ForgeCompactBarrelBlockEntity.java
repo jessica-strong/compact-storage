@@ -14,7 +14,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 public class ForgeCompactBarrelBlockEntity extends CompactBarrelBlockEntity {
-    private final LazyOptional<IItemHandler> inventoryWrapper;
+    private LazyOptional<IItemHandler> inventoryWrapper;
     public ForgeCompactBarrelBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(blockPos, blockState);
         this.inventoryWrapper = LazyOptional.of(() -> new InvWrapper(this.getInventory()));
@@ -23,7 +23,7 @@ public class ForgeCompactBarrelBlockEntity extends CompactBarrelBlockEntity {
     @Override
     public void resizeInventory(boolean copy_contents) {
         super.resizeInventory(copy_contents);
-        this.invalidateCaps();
+        this.inventoryWrapper = LazyOptional.of(() -> new InvWrapper(this.getInventory()));
     }
 
     @Override

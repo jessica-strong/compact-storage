@@ -9,6 +9,9 @@ pluginManagement {
             url = 'https://maven.parchmentmc.org'
         }
         gradlePluginPortal()
+        maven {
+            url "https://cursemaven.com"
+        }
     }
 }
 
