@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class BackpackItem extends Item {
     public BackpackItem(Properties settings) {
         super(settings);
     }
+
 
 
     @Override
@@ -48,7 +51,7 @@ public class BackpackItem extends Item {
 
             if(!oppositeItemStack.isEmpty()) {
                 Item oppositeItem = oppositeItemStack.getItem();
-                BackpackInventory inventory = new BackpackInventory(tag.getCompound("Backpack"), player, isInOffhand, registries);
+                BackpackInventory inventory = new BackpackInventory(tag.getCompound("Backpack"), player, isInOffhand, world.registryAccess());
 
                 if(hand == InteractionHand.MAIN_HAND && oppositeItem instanceof BackpackItem) {
                     return super.use(world, player, hand);
@@ -58,7 +61,7 @@ public class BackpackItem extends Item {
                     if(inventory.increaseSize(1, 0)) {
                         player.getItemInHand(oppositeHand).shrink(1);
 
-                        tag.put("Backpack", inventory.toTag());
+                        tag.put("Backpack", inventory.toTag(world.registryAccess()));
                         heldItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
                         player.displayClientMessage(Component.translatable("text.compact_storage.upgrade_success").withStyle(ChatFormatting.GREEN), true);
@@ -73,7 +76,7 @@ public class BackpackItem extends Item {
                     if(inventory.increaseSize(0, 1)) {
                         player.getItemInHand(oppositeHand).shrink(1);
 
-                        tag.put("Backpack", inventory.toTag());
+                        tag.put("Backpack", inventory.toTag(world.registryAccess()));
                         heldItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
                         player.displayClientMessage(Component.translatable("text.compact_storage.upgrade_success").withStyle(ChatFormatting.GREEN), true);

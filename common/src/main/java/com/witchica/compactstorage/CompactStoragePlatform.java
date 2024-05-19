@@ -3,7 +3,6 @@ package com.witchica.compactstorage;
 import com.witchica.compactstorage.common.block.entity.CompactBarrelBlockEntity;
 import com.witchica.compactstorage.common.block.entity.CompactChestBlockEntity;
 import com.witchica.compactstorage.common.block.entity.DrumBlockEntity;
-import com.witchica.compactstorage.common.inventory.BackpackInventoryHandlerFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;

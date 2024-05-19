@@ -33,8 +33,6 @@ dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neo_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
-    modImplementation "curse.maven:jei-238222:5101381"
-    modImplementation "curse.maven:ae2-223794:5119040"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

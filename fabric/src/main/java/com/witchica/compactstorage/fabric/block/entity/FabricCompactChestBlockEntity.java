@@ -4,6 +4,7 @@ import com.witchica.compactstorage.common.block.entity.CompactChestBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,8 +25,8 @@ public class FabricCompactChestBlockEntity extends CompactChestBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.inventoryStorage = InventoryStorage.of(this, null);
     }
 }

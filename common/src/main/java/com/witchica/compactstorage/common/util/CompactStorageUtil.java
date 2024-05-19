@@ -44,29 +44,34 @@ public class CompactStorageUtil {
     public static void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag, boolean isBackpack) {
         int inventoryX = 9;
         int inventoryY = 6;
+        boolean retaining = false;
 
-        CompoundTag compound = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+        if(stack.has(DataComponents.CUSTOM_DATA)) {
+            CompoundTag compound = stack.get(DataComponents.CUSTOM_DATA).copyTag();
 
-        if(isBackpack && compound != null) {
-            compound = compound.getCompound("Backpack");
-        }
+            if(isBackpack) {
+                compound = compound.getCompound("Backpack");
+            }
 
-        if(compound != null && compound.contains("inventory_width")) {
-            inventoryX = compound.getInt("inventory_width");
-            inventoryY = compound.getInt("inventory_height");
+            if(compound.contains("inventory_width")) {
+                inventoryX = compound.getInt("inventory_width");
+                inventoryY = compound.getInt("inventory_height");
+            }
+
+            if(compound.contains("retaining")) {
+                retaining = compound.getBoolean("retaining");
+            }
         }
 
         int slots = inventoryX * inventoryY;
         tooltip.add(Component.translatable("tooltip.compact_storage.storage_size", inventoryX, inventoryY, slots).withStyle(ChatFormatting.AQUA, ChatFormatting.ITALIC));
 
-        if(compound != null && compound.contains("retaining") && compound.getBoolean("retaining")) {
+        if(retaining) {
             tooltip.add(Component.translatable("tooltip.compact_storage.retaining").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD));
         }
-
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
     }
 
-    public static void dropContents(Level world, BlockPos pos, Block block, Player player, HolderLookup.Provider registries) {
+    public static void dropContents(Level world, BlockPos pos, Block block, Player player) {
         if(world.isClientSide) {
             return;
         }
@@ -83,7 +88,7 @@ public class CompactStorageUtil {
             chestTag.putBoolean("retaining", retaining);
 
             if(retaining) {
-                writeItemsToTag(inventory.getItemList(), chestTag, registries);
+                writeItemsToTag(inventory.getItemList(), chestTag, null);
             }
 
             chestStack.set(DataComponents.CUSTOM_DATA, CustomData.of(chestTag));
@@ -112,10 +117,10 @@ public class CompactStorageUtil {
             chestTag.putBoolean("Retaining", retaining);
 
             if(retaining) {
-                writeItemsToTag("Inventory", drumBlockEntity.inventory.getItems(), chestTag, registries);
+                writeItemsToTag("Inventory", drumBlockEntity.inventory.getItems(), chestTag, null);
 
                 if(drumBlockEntity.hasAnyItems()) {
-                    chestTag.put("TooltipItem", new ItemStack(drumBlockEntity.getStoredType(), 1).save(registries));
+                    chestTag.put("TooltipItem", new ItemStack(drumBlockEntity.getStoredType(), 1).save(null));
                     chestTag.putInt("TooltipCount", drumBlockEntity.getTotalItemCount());
                 }
             }

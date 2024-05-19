@@ -87,59 +87,59 @@ public class CompactChestBlock extends BaseEntityBlock {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
+//    @Override
+//    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+//        super.setPlacedBy(world, pos, state, placer, itemStack);
+//
+//        if (itemStack.hasCustomHoverName()) {
+//            BlockEntity blockEntity = world.getBlockEntity(pos);
+//
+//            if (blockEntity instanceof CompactChestBlockEntity) {
+//                ((CompactChestBlockEntity) blockEntity).setCustomName(itemStack.getHoverName());
+//            }
+//        }
+//
+//        if (!world.isClientSide && itemStack.hasTag()) {
+//            CompoundTag nbt = itemStack.getTag();
+//            BlockEntity blockEntity = world.getBlockEntity(pos);
+//
+//         if (blockEntity instanceof CompactChestBlockEntity compactChestBlockEntity) {
+//                compactChestBlockEntity.load(nbt);
+//            }
+//        }
+//}
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-        super.setPlacedBy(world, pos, state, placer, itemStack);
-
-        if (itemStack.hasCustomHoverName()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-
-            if (blockEntity instanceof CompactChestBlockEntity) {
-                ((CompactChestBlockEntity) blockEntity).setCustomName(itemStack.getHoverName());
-            }
-        }
-
-        if (!world.isClientSide && itemStack.hasTag()) {
-            CompoundTag nbt = itemStack.getTag();
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-
-         if (blockEntity instanceof CompactChestBlockEntity compactChestBlockEntity) {
-                compactChestBlockEntity.load(nbt);
-            }
-        }
-}
-    @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+    public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
             BlockHitResult hit) {
         if (!world.isClientSide) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
-            if(blockEntity instanceof CompactChestBlockEntity compactChestBlockEntity) {
-                Item heldItem = player.getItemInHand(hand).getItem();
+//            if(blockEntity instanceof CompactChestBlockEntity compactChestBlockEntity) {
+//                Item heldItem = player.getItemInHand(hand).getItem();
+//
+//                if(heldItem instanceof StorageUpgradeItem storageUpgradeItem) {
+//                    if(compactChestBlockEntity.applyUpgrade(storageUpgradeItem.getUpgradeType())) {
+//                        player.getItemInHand(hand).shrink(1);
+//                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeSuccess).withStyle(ChatFormatting.GREEN), true);
+//                        player.playNotifySound(SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+//                        return InteractionResult.CONSUME_PARTIAL;
+//                    } else {
+//                        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+//                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeFail).withStyle(ChatFormatting.RED), true);
+//                        return InteractionResult.FAIL;
+//                    }
+//                } else if(canDye && heldItem instanceof DyeItem dyeItem) {
+//                    Block newBlock = CompactStorage.getCompactChestFromDyeColor(dyeItem.getDyeColor());
+//                    if(newBlock != this) {
+//                        world.setBlockAndUpdate(pos, newBlock.defaultBlockState().setValue(FACING, state.getValue(FACING)));
+//                        player.playNotifySound(SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 1f, 1f);
+//                        player.getItemInHand(hand).shrink(1);
+//                        return InteractionResult.CONSUME_PARTIAL;
+//                    }
+//                 }
+//            }
 
-                if(heldItem instanceof StorageUpgradeItem storageUpgradeItem) {
-                    if(compactChestBlockEntity.applyUpgrade(storageUpgradeItem.getUpgradeType())) {
-                        player.getItemInHand(hand).shrink(1);
-                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeSuccess).withStyle(ChatFormatting.GREEN), true);
-                        player.playNotifySound(SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
-                        return InteractionResult.CONSUME_PARTIAL;
-                    } else {
-                        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
-                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeFail).withStyle(ChatFormatting.RED), true);
-                        return InteractionResult.FAIL;
-                    }
-                } else if(canDye && heldItem instanceof DyeItem dyeItem) {
-                    Block newBlock = CompactStorage.getCompactChestFromDyeColor(dyeItem.getDyeColor());
-                    if(newBlock != this) {
-                        world.setBlockAndUpdate(pos, newBlock.defaultBlockState().setValue(FACING, state.getValue(FACING)));
-                        player.playNotifySound(SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 1f, 1f);
-                        player.getItemInHand(hand).shrink(1);
-                        return InteractionResult.CONSUME_PARTIAL;
-                    }
-                 }
-            }
-
-            openMenu(world, player, pos, state, hand);
+            openMenu(world, player, pos, state);
         }
 
         return InteractionResult.SUCCESS;
@@ -152,7 +152,7 @@ public class CompactChestBlock extends BaseEntityBlock {
         }
     }
 
-    public void openMenu(Level level, Player player, BlockPos pos, BlockState state, InteractionHand hand) {
+    public void openMenu(Level level, Player player, BlockPos pos, BlockState state) {
         MenuRegistry.openExtendedMenu((ServerPlayer) player, CompactStorageMenuProvider.ofBlock(pos, Component.translatable("container.compact_storage.compact_chest")));
     }
 
@@ -170,20 +170,20 @@ public class CompactChestBlock extends BaseEntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        CompactStorageUtil.dropContents(world, pos, state.getBlock(), player, registries);
+        CompactStorageUtil.dropContents(world, pos, state.getBlock(), player);
         return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
     public void onExplosionHit(BlockState state, Level world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
-        CompactStorageUtil.dropContents(world, pos, this, null, registries);
+        CompactStorageUtil.dropContents(world, pos, this, null);
         super.onExplosionHit(state, world, pos, explosion, stackMerger);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag options) {
-        super.appendHoverText(stack, world, tooltip, options);
-        CompactStorageUtil.appendTooltip(stack, world, tooltip, options, false);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tootipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tootipComponents, tooltipFlag);
+        CompactStorageUtil.appendTooltip(stack, context, tootipComponents, tooltipFlag, false);
     }
 
     @Override

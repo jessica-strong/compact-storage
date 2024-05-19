@@ -108,7 +108,7 @@ public class DrumBlockEntity extends BlockEntity {
         super.saveAdditional(nbt, registries);
         nbt.put("Inventory", inventory.createTag(registries));
 
-        nbt.put("ClientItem", new ItemStack(getStoredType(), 1).save(registries));
+        nbt.put("ClientItem", new ItemStack(getStoredType(), 1).saveOptional(registries));
         nbt.putInt("ClientStackSize", getStoredType().getDefaultMaxStackSize());
         nbt.putInt("ClientStoredItems", getTotalItemCount());
 

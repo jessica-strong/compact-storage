@@ -1,6 +1,5 @@
 modLoader = "javafml"
 loaderVersion = "${mod_neo_loader_version}"
-issueTrackerURL = "${mod_sources}"
 license = "LGPLv3"
 logoFile = "${logo_file}"
 

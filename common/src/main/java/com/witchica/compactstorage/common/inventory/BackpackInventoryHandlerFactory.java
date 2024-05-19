@@ -31,22 +31,22 @@ public class BackpackInventoryHandlerFactory implements MenuProvider {
         return backpackStack.has(DataComponents.CUSTOM_NAME) ? backpackStack.getHoverName() : Component.translatable("container.compact_storage.backpack");
     }
 
-    public static BackpackInventory getBackpackInventory(Player player, InteractionHand hand, HolderLookup.Provider registries) {
+    public static BackpackInventory getBackpackInventory(Player player, InteractionHand hand) {
         ItemStack backpackStack = player.getItemInHand(hand);
         boolean isInOffhand = hand == InteractionHand.OFF_HAND;
 
         if(backpackStack.has(DataComponents.CUSTOM_DATA)) {
             CompoundTag backpackTag = backpackStack.get(DataComponents.CUSTOM_DATA).copyTag().getCompound("Backpack");
-            return new BackpackInventory(backpackTag, player, isInOffhand, registries);
+            return new BackpackInventory(backpackTag, player, isInOffhand, null);
         } else {
-            return new BackpackInventory(new CompoundTag(), player, isInOffhand, registries);
+            return new BackpackInventory(new CompoundTag(), player, isInOffhand, null);
         }
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
-        BackpackInventory backpackInventory = getBackpackInventory(player, hand, registries);
+        BackpackInventory backpackInventory = getBackpackInventory(player, hand);
         return new CompactChestScreenHandler(syncId, inv, writeToByteBuf(new FriendlyByteBuf(Unpooled.buffer())));
     }
 
