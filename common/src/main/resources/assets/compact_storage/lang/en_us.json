@@ -130,5 +130,18 @@
     "block.compact_storage.mangrove_compact_barrel": "Mangrove Compact Barrel",
     "block.compact_storage.warped_compact_barrel": "Warped Compact Barrel",
     "block.compact_storage.cherry_compact_barrel": "Cherry Compact Barrel",
-    "block.compact_storage.jungle_compact_barrel": "Jungle Compact Barrel"
+    "block.compact_storage.jungle_compact_barrel": "Jungle Compact Barrel",
+
+    "tag.item.compact_storage.blocks.compact_barrel": "Compact Barrel Blocks",
+    "tag.item.compact_storage.blocks.compact_barrels_wood": "Wooden Compact Barrel Blocks",
+    "tag.item.compact_storage.blocks.compact_chest": "Compact Chest Blocks",
+    "tag.item.compact_storage.blocks.compact_chests_wood": "Wooden Compact Chest Blocks",
+    "tag.item.compact_storage.blocks.drum": "Drum Blocks",
+
+    "tag.item.compact_storage.items.compact_barrel": "Compact Barrel Items",
+    "tag.item.compact_storage.items.compact_barrels_wood": "Wooden Compact Barrel Items",
+    "tag.item.compact_storage.items.compact_chest": "Compact Chest Items",
+    "tag.item.compact_storage.items.compact_chests_wood": "Wooden Compact Chest Items",
+    "tag.item.compact_storage.items.drum": "Drum Items",
+    "tag.item.compact_storage.items.backpack": "Backpack Items"
 }

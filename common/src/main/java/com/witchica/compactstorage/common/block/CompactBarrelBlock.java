@@ -11,6 +11,7 @@ import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,6 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -78,11 +80,11 @@ public class CompactBarrelBlock extends BaseEntityBlock {
         builder.add(FACING, OPEN, RETAINING);
     }
 
-//    @Override
-//    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-//        super.setPlacedBy(world, pos, state, placer, itemStack);
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        super.setPlacedBy(world, pos, state, placer, itemStack);
 //
-//        if (itemStack.hasCustomHoverName()) {
+//        if (itemStack.has(DataComponents.CUSTOM_NAME)) {
 //            BlockEntity blockEntity = world.getBlockEntity(pos);
 //
 //            if (blockEntity instanceof CompactBarrelBlockEntity) {
@@ -98,7 +100,7 @@ public class CompactBarrelBlock extends BaseEntityBlock {
 //                compactBarrelBlockEntity.load(nbt);
 //            }
 //        }
-//    }
+    }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
@@ -108,40 +110,44 @@ public class CompactBarrelBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
-                              BlockHitResult hit) {
-        if (!world.isClientSide) {
-            if (!world.isClientSide) {
-                BlockEntity blockEntity = world.getBlockEntity(pos);
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!level.isClientSide) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
 
-//                if(blockEntity instanceof CompactBarrelBlockEntity compactBarrelBlockEntity) {
-//                    Item heldItem = player.getItemInHand(hand).getItem();
-//
-//                    if(heldItem instanceof StorageUpgradeItem storageUpgradeItem) {
-//                        if(compactBarrelBlockEntity.applyUpgrade(storageUpgradeItem.getUpgradeType())) {
-//                            player.getItemInHand(hand).shrink(1);
-//                            player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeSuccess).withStyle(ChatFormatting.GREEN), true);
-//                            player.playNotifySound(SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
-//                            return InteractionResult.CONSUME_PARTIAL;
-//                        } else {
-//                            player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
-//                            player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeFail).withStyle(ChatFormatting.RED), true);
-//                            return InteractionResult.FAIL;
-//                        }
-//                    } else if(canDye && heldItem instanceof DyeItem dyeItem) {
-//                        Block newBlock = CompactStorage.getCompactBarrelFromDyeColor(dyeItem.getDyeColor());
-//
-//                        if(newBlock != this) {
-//                            world.setBlockAndUpdate(pos, newBlock.defaultBlockState().setValue(FACING, state.getValue(FACING)));
-//                            player.playNotifySound(SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 1f, 1f);
-//                            player.getItemInHand(hand).shrink(1);
-//                            return InteractionResult.CONSUME_PARTIAL;
-//                        }
-//                    }
-//                }
+            if (blockEntity instanceof CompactBarrelBlockEntity compactBarrelBlockEntity) {
+                Item heldItem = player.getItemInHand(hand).getItem();
 
-                openMenu(world, player, pos, state);
+                if (heldItem instanceof StorageUpgradeItem storageUpgradeItem) {
+                    if (compactBarrelBlockEntity.applyUpgrade(storageUpgradeItem.getUpgradeType())) {
+                        player.getItemInHand(hand).shrink(1);
+                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeSuccess).withStyle(ChatFormatting.GREEN), true);
+                        player.playNotifySound(SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                        return ItemInteractionResult.CONSUME_PARTIAL;
+                    } else {
+                        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeFail).withStyle(ChatFormatting.RED), true);
+                        return ItemInteractionResult.FAIL;
+                    }
+                } else if (canDye && heldItem instanceof DyeItem dyeItem) {
+                    Block newBlock = CompactStorage.getCompactBarrelFromDyeColor(dyeItem.getDyeColor());
+
+                    if (newBlock != this) {
+                        level.setBlockAndUpdate(pos, newBlock.defaultBlockState().setValue(FACING, state.getValue(FACING)));
+                        player.playNotifySound(SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 1f, 1f);
+                        player.getItemInHand(hand).shrink(1);
+                        return ItemInteractionResult.CONSUME_PARTIAL;
+                    }
+                }
             }
+        }
+
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+    }
+
+    @Override
+    public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!world.isClientSide) {
+            openMenu(world, player, pos, state);
         }
 
         return InteractionResult.SUCCESS;

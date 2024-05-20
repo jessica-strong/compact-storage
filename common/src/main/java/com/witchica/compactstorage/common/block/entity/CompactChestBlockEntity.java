@@ -12,6 +12,8 @@ import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -25,8 +27,11 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -151,6 +156,27 @@ public class CompactChestBlockEntity extends RandomizableContainerBlockEntity im
         nbt.putInt("inventory_width", inventoryWidth);
         nbt.putInt("inventory_height", inventoryHeight);
         nbt.putBoolean("retaining", retaining);
+    }
+
+    @Override
+    public void saveToItem(ItemStack stack, HolderLookup.Provider registries) {
+        CompoundTag compoundTag = this.saveCustomOnly(registries);
+
+        if(!retaining) {
+            compoundTag.remove("Items");
+        }
+        this.removeComponentsFromTag(compoundTag);
+        BlockItem.setBlockEntityData(stack, this.getType(), compoundTag);
+        stack.applyComponents(this.collectComponents());
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+
+        if(!retaining) {
+            components.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        }
     }
 
     @Override

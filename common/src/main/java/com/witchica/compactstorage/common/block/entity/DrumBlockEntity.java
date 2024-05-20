@@ -6,6 +6,7 @@ import com.witchica.compactstorage.common.block.CompactBarrelBlock;
 import com.witchica.compactstorage.common.block.DrumBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -13,8 +14,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -125,6 +128,28 @@ public class DrumBlockEntity extends BlockEntity {
         this.clientStackSize = nbt.getInt("ClientStackSize");
         this.clientStoredItems = nbt.getInt("ClientStoredItems");
         this.retaining = nbt.getBoolean("Retaining");
+    }
+
+    @Override
+    public void saveToItem(ItemStack stack, HolderLookup.Provider registries) {
+        CompoundTag compoundTag = this.saveCustomOnly(registries);
+
+        if(!retaining) {
+            compoundTag.remove("Inventory");
+        }
+
+        this.removeComponentsFromTag(compoundTag);
+        BlockItem.setBlockEntityData(stack, this.getType(), compoundTag);
+        stack.applyComponents(this.collectComponents());
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+
+        if(!retaining) {
+            components.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        }
     }
 
     @Nullable

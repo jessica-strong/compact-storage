@@ -87,9 +87,7 @@ public class CompactStorageUtil {
             chestTag.putInt("inventory_height", inventory.getInventoryHeight());
             chestTag.putBoolean("retaining", retaining);
 
-            if(retaining) {
-                writeItemsToTag(inventory.getItemList(), chestTag, null);
-            }
+            blockEntity.saveToItem(chestStack, world.registryAccess());
 
             chestStack.set(DataComponents.CUSTOM_DATA, CustomData.of(chestTag));
 
@@ -115,12 +113,11 @@ public class CompactStorageUtil {
 
             CompoundTag chestTag = new CompoundTag();
             chestTag.putBoolean("Retaining", retaining);
+            blockEntity.saveToItem(drumStack, world.registryAccess());
 
             if(retaining) {
-                writeItemsToTag("Inventory", drumBlockEntity.inventory.getItems(), chestTag, null);
-
                 if(drumBlockEntity.hasAnyItems()) {
-                    chestTag.put("TooltipItem", new ItemStack(drumBlockEntity.getStoredType(), 1).save(null));
+                    chestTag.put("TooltipItem", new ItemStack(drumBlockEntity.getStoredType(), 1).save(world.registryAccess()));
                     chestTag.putInt("TooltipCount", drumBlockEntity.getTotalItemCount());
                 }
             }
@@ -150,7 +147,7 @@ public class CompactStorageUtil {
         for(int i = 0; i < inventory.size(); ++i) {
             ItemStack itemStack = (ItemStack)inventory.get(i);
             if (!itemStack.isEmpty()) {
-                CompoundTag nbt = (CompoundTag) itemStack.save(lookupProvider);
+                CompoundTag nbt = (CompoundTag) itemStack.saveOptional(lookupProvider);
                 nbt.putInt("Slot", i);
                 listTag.add(nbt);
             }

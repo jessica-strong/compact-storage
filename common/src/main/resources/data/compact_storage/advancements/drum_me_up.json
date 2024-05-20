@@ -2,7 +2,7 @@
   "parent": "compact_storage:storage_on_the_move",
   "display": {
     "icon": {
-      "item": "compact_storage:cherry_drum"
+      "id": "compact_storage:cherry_drum"
     },
     "title": {
       "translate": "text.compact_storage.advancements.drum_me_up",

@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "compact_storage:compact_chest_red"
+      "id": "compact_storage:compact_chest_red"
     },
     "title": {
       "translate": "text.compact_storage.advancements.compacting_your_storage",

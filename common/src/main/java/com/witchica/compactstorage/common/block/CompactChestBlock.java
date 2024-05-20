@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -108,37 +110,46 @@ public class CompactChestBlock extends BaseEntityBlock {
 //            }
 //        }
 //}
+
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!level.isClientSide) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+
+            if (blockEntity instanceof CompactChestBlockEntity compactChestBlockEntity) {
+                Item heldItem = player.getItemInHand(hand).getItem();
+
+                if (heldItem instanceof StorageUpgradeItem storageUpgradeItem) {
+                    if (compactChestBlockEntity.applyUpgrade(storageUpgradeItem.getUpgradeType())) {
+                        player.getItemInHand(hand).shrink(1);
+                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeSuccess).withStyle(ChatFormatting.GREEN), true);
+                        player.playNotifySound(SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                        return ItemInteractionResult.CONSUME_PARTIAL;
+                    } else {
+                        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeFail).withStyle(ChatFormatting.RED), true);
+                        return ItemInteractionResult.FAIL;
+                    }
+                } else if (canDye && heldItem instanceof DyeItem dyeItem) {
+                    Block newBlock = CompactStorage.getCompactChestFromDyeColor(dyeItem.getDyeColor());
+                    if (newBlock != this) {
+                        level.setBlockAndUpdate(pos, newBlock.defaultBlockState().setValue(FACING, state.getValue(FACING)));
+                        player.playNotifySound(SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 1f, 1f);
+                        player.getItemInHand(hand).shrink(1);
+                        return ItemInteractionResult.CONSUME_PARTIAL;
+                    }
+                }
+            }
+        }
+
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+    }
+
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
             BlockHitResult hit) {
         if (!world.isClientSide) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-
-//            if(blockEntity instanceof CompactChestBlockEntity compactChestBlockEntity) {
-//                Item heldItem = player.getItemInHand(hand).getItem();
-//
-//                if(heldItem instanceof StorageUpgradeItem storageUpgradeItem) {
-//                    if(compactChestBlockEntity.applyUpgrade(storageUpgradeItem.getUpgradeType())) {
-//                        player.getItemInHand(hand).shrink(1);
-//                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeSuccess).withStyle(ChatFormatting.GREEN), true);
-//                        player.playNotifySound(SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
-//                        return InteractionResult.CONSUME_PARTIAL;
-//                    } else {
-//                        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
-//                        player.displayClientMessage(Component.translatable(storageUpgradeItem.getUpgradeType().upgradeFail).withStyle(ChatFormatting.RED), true);
-//                        return InteractionResult.FAIL;
-//                    }
-//                } else if(canDye && heldItem instanceof DyeItem dyeItem) {
-//                    Block newBlock = CompactStorage.getCompactChestFromDyeColor(dyeItem.getDyeColor());
-//                    if(newBlock != this) {
-//                        world.setBlockAndUpdate(pos, newBlock.defaultBlockState().setValue(FACING, state.getValue(FACING)));
-//                        player.playNotifySound(SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 1f, 1f);
-//                        player.getItemInHand(hand).shrink(1);
-//                        return InteractionResult.CONSUME_PARTIAL;
-//                    }
-//                 }
-//            }
-
             openMenu(world, player, pos, state);
         }
 

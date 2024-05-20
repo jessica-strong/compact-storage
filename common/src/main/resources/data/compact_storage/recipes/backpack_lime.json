@@ -17,7 +17,7 @@
         }
     },
     "result": {
-        "item": "compact_storage:backpack_lime",
+      "id": "compact_storage:backpack_lime",
         "count": 1
     }
 }

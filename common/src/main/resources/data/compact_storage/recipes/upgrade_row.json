@@ -14,7 +14,7 @@
       }
     },
     "result": {
-      "item": "compact_storage:upgrade_row",
+      "id": "compact_storage:upgrade_row",
       "count": 1
     }
   }

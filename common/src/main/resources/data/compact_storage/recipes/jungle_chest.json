@@ -18,7 +18,7 @@
     "IWI"
   ],
   "result": {
-    "item": "compact_storage:jungle_compact_chest",
+    "id": "compact_storage:jungle_compact_chest",
     "count": 1
   },
   "show_notification": true

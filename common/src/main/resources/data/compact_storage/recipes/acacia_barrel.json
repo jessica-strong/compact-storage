@@ -18,7 +18,7 @@
     "SIS"
   ],
   "result": {
-    "item": "compact_storage:acacia_compact_barrel",
+    "id": "compact_storage:acacia_compact_barrel",
     "count": 1
   },
   "show_notification": true

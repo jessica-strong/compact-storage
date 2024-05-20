@@ -18,7 +18,7 @@
     "IWI"
   ],
   "result": {
-    "item": "compact_storage:birch_compact_chest",
+    "id": "compact_storage:birch_compact_chest",
     "count": 1
   },
   "show_notification": true
