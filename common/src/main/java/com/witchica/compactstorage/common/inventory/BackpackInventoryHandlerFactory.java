@@ -37,9 +37,9 @@ public class BackpackInventoryHandlerFactory implements MenuProvider {
 
         if(backpackStack.has(DataComponents.CUSTOM_DATA)) {
             CompoundTag backpackTag = backpackStack.get(DataComponents.CUSTOM_DATA).copyTag().getCompound("Backpack");
-            return new BackpackInventory(backpackTag, player, isInOffhand, null);
+            return new BackpackInventory(backpackTag, player, isInOffhand, player.getCommandSenderWorld().registryAccess());
         } else {
-            return new BackpackInventory(new CompoundTag(), player, isInOffhand, null);
+            return new BackpackInventory(new CompoundTag(), player, isInOffhand, player.getCommandSenderWorld().registryAccess());
         }
     }
 
