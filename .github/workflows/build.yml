@@ -4,7 +4,7 @@
 # against bad commits.
 
 name: build
-on: [push]
+on: [push, workflow_run]
 
 jobs:
   build:
