@@ -38,15 +38,15 @@ public class    CompactChestBlockEntityRenderer implements BlockEntityRenderer<C
 
     static {
         for(int i = 0; i < 16; i++) {
-            CHEST_TEXTURES.put(CompactStorage.COMPACT_CHEST_BLOCKS[i].get(), new ResourceLocation("compact_storage", String.format("textures/block/chest/%s_chest.png", DyeColor.byId(i).name().toLowerCase())));
+            CHEST_TEXTURES.put(CompactStorage.COMPACT_CHEST_BLOCKS[i].get(), ResourceLocation.fromNamespaceAndPath("compact_storage", String.format("textures/block/chest/%s_chest.png", DyeColor.byId(i).name().toLowerCase())));
         }
 
         for(int i = 0; i < CompactStorageUtil.DRUM_TYPES.length; i++) {
-            CHEST_TEXTURES.put(CompactStorage.COMPACT_CHEST_WOOD_BLOCKS[i].get(), new ResourceLocation("compact_storage", String.format("textures/block/chest/%s_chest.png", CompactStorageUtil.DRUM_TYPES[i])));
+            CHEST_TEXTURES.put(CompactStorage.COMPACT_CHEST_WOOD_BLOCKS[i].get(), ResourceLocation.fromNamespaceAndPath("compact_storage", String.format("textures/block/chest/%s_chest.png", CompactStorageUtil.DRUM_TYPES[i])));
         }
     }
 
-    public static final ResourceLocation RETAINING_TEXTURE = new ResourceLocation("compact_storage", "textures/block/chest/retaining_chest.png");
+    public static final ResourceLocation RETAINING_TEXTURE = ResourceLocation.fromNamespaceAndPath("compact_storage", "textures/block/chest/retaining_chest.png");
     
     public CompactChestBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
         super();

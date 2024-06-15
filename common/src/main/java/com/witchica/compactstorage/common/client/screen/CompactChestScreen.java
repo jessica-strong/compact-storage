@@ -11,8 +11,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 
 public class CompactChestScreen extends AbstractContainerScreen<CompactChestScreenHandler> {
-    public static final ResourceLocation CHEST_SLOTS_TEXTURE = new ResourceLocation("compact_storage", "textures/gui/chest_slots.png");
-    public static final ResourceLocation CHEST_BACKGROUND_TEXTURE = new ResourceLocation("compact_storage", "textures/gui/chest.png");
+    public static final ResourceLocation CHEST_SLOTS_TEXTURE = ResourceLocation.fromNamespaceAndPath("compact_storage", "textures/gui/chest_slots.png");
+    public static final ResourceLocation CHEST_BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath("compact_storage", "textures/gui/chest.png");
     
     private CompactChestScreenHandler container;
     private Inventory playerInventory;

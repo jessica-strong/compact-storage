@@ -93,7 +93,8 @@ allprojects {
                     "mod_forge_version": rootProject.mod_neo_version,
                     "mod_forge_minecraft_range": rootProject.mod_neo_minecraft_range,
                     "logo_file": rootProject.logo_file,
-                    "architectury_version": rootProject.architectury_version
+                    "architectury_version": rootProject.architectury_version,
+                    "minecraft_version": rootProject.minecraft_version
         }
     }
 }

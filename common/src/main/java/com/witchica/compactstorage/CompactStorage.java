@@ -50,8 +50,8 @@ public class CompactStorage {
     private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(MOD_ID, Registries.MENU);
     private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(MOD_ID, Registries.CREATIVE_MODE_TAB);
 
-    public static ResourceLocation COMPACT_CHEST_GENERIC_IDENTIFIER = new ResourceLocation(MOD_ID, "compact_chest");
-    public static ResourceLocation COMPACT_BARREL_GENERIC_IDENTIFIER = new ResourceLocation(MOD_ID, "compact_barrel");
+    public static ResourceLocation COMPACT_CHEST_GENERIC_IDENTIFIER = ResourceLocation.fromNamespaceAndPath(MOD_ID, "compact_chest");
+    public static ResourceLocation COMPACT_BARREL_GENERIC_IDENTIFIER = ResourceLocation.fromNamespaceAndPath(MOD_ID, "compact_barrel");
 
     public static final RegistrySupplier<CompactChestBlock>[] COMPACT_CHEST_BLOCKS = new RegistrySupplier[16];
     public static final RegistrySupplier<CompactChestBlock>[] COMPACT_CHEST_WOOD_BLOCKS = new RegistrySupplier[CompactStorageUtil.DRUM_TYPES.length];

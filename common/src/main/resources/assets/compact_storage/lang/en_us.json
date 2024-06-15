@@ -132,16 +132,16 @@
     "block.compact_storage.cherry_compact_barrel": "Cherry Compact Barrel",
     "block.compact_storage.jungle_compact_barrel": "Jungle Compact Barrel",
 
-    "tag.item.compact_storage.blocks.compact_barrel": "Compact Barrel Blocks",
-    "tag.item.compact_storage.blocks.compact_barrels_wood": "Wooden Compact Barrel Blocks",
-    "tag.item.compact_storage.blocks.compact_chest": "Compact Chest Blocks",
-    "tag.item.compact_storage.blocks.compact_chests_wood": "Wooden Compact Chest Blocks",
-    "tag.item.compact_storage.blocks.drum": "Drum Blocks",
+    "tag.item.compact_storage.block.compact_barrel": "Compact Barrel Blocks",
+    "tag.item.compact_storage.block.compact_barrels_wood": "Wooden Compact Barrel Blocks",
+    "tag.item.compact_storage.block.compact_chest": "Compact Chest Blocks",
+    "tag.item.compact_storage.block.compact_chests_wood": "Wooden Compact Chest Blocks",
+    "tag.item.compact_storage.block.drum": "Drum Blocks",
 
-    "tag.item.compact_storage.items.compact_barrel": "Compact Barrel Items",
-    "tag.item.compact_storage.items.compact_barrels_wood": "Wooden Compact Barrel Items",
-    "tag.item.compact_storage.items.compact_chest": "Compact Chest Items",
-    "tag.item.compact_storage.items.compact_chests_wood": "Wooden Compact Chest Items",
-    "tag.item.compact_storage.items.drum": "Drum Items",
-    "tag.item.compact_storage.items.backpack": "Backpack Items"
+    "tag.item.compact_storage.item.compact_barrel": "Compact Barrel Items",
+    "tag.item.compact_storage.item.compact_barrels_wood": "Wooden Compact Barrel Items",
+    "tag.item.compact_storage.item.compact_chest": "Compact Chest Items",
+    "tag.item.compact_storage.item.compact_chests_wood": "Wooden Compact Chest Items",
+    "tag.item.compact_storage.item.drum": "Drum Items",
+    "tag.item.compact_storage.item.backpack": "Backpack Items"
 }
