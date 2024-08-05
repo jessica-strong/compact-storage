@@ -4,7 +4,7 @@
 # against bad commits.
 
 name: build
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   build:
@@ -33,7 +33,6 @@ jobs:
           mkdir dist
           cp fabric/build/libs/*.jar dist
           cp neoforge/build/libs/*.jar dist
-          cp forge/build/libs/*.jar dist
       - name: capture build artifacts
         uses: actions/upload-artifact@v3
         with:
