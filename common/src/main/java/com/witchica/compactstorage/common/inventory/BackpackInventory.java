@@ -146,7 +146,7 @@ public class BackpackInventory implements Container, CompactStorageInventoryImpl
                 return false;
             }
             case WIDTH_INCREASE -> {
-                return inventoryWidth < 24;
+                return inventoryWidth < 21;
             }
             case HEIGHT_INCREASE -> {
                 return inventoryHeight < 12;

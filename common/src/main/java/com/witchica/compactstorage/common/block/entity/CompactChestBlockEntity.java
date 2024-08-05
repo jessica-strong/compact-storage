@@ -263,7 +263,7 @@ public class CompactChestBlockEntity extends RandomizableContainerBlockEntity im
                 return !this.retaining;
             }
             case WIDTH_INCREASE -> {
-                return inventoryWidth < 24;
+                return inventoryWidth < 21;
             }
             case HEIGHT_INCREASE -> {
                 return inventoryHeight < 12;
