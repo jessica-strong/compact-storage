@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class CompactStorage {
     public static final String MOD_ID = "compact_storage";
@@ -126,7 +127,7 @@ public class CompactStorage {
 
     static {
         for(int i = 0; i < 16; i++) {
-            String dyeName = DyeColor.byId(i).getName().toLowerCase();
+            String dyeName = DyeColor.byId(i).getName().toLowerCase(Locale.ROOT);
             DyeColor color = DyeColor.byId(i);
             final int id = i;
 

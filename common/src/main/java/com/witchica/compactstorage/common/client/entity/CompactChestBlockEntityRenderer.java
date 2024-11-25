@@ -25,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
@@ -38,7 +39,7 @@ public class    CompactChestBlockEntityRenderer implements BlockEntityRenderer<C
 
     static {
         for(int i = 0; i < 16; i++) {
-            CHEST_TEXTURES.put(CompactStorage.COMPACT_CHEST_BLOCKS[i].get(), ResourceLocation.fromNamespaceAndPath("compact_storage", String.format("textures/block/chest/%s_chest.png", DyeColor.byId(i).name().toLowerCase())));
+            CHEST_TEXTURES.put(CompactStorage.COMPACT_CHEST_BLOCKS[i].get(), ResourceLocation.fromNamespaceAndPath("compact_storage", String.format("textures/block/chest/%s_chest.png", DyeColor.byId(i).name().toLowerCase(Locale.ROOT))));
         }
 
         for(int i = 0; i < CompactStorageUtil.DRUM_TYPES.length; i++) {
