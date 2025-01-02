@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static com.witchica.compactstorage.CompactStorageCommon.MOD_ID;
 
@@ -90,7 +91,7 @@ public class CompactStorageForge {
 
     static {
         for(int i = 0; i < 16; i++) {
-            String dyeName = DyeColor.byId(i).getName().toLowerCase();
+            String dyeName = DyeColor.byId(i).getName().toLowerCase(Locale.ROOT);
             DyeColor color = DyeColor.byId(i);
             final int id = i;
 

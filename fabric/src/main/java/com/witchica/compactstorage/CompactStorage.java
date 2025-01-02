@@ -75,7 +75,7 @@ public class CompactStorage implements ModInitializer {
 
 	static {
 		for(int i = 0; i < 16; i++) {
-			String dyeName = DyeColor.byId(i).getName().toLowerCase();
+			String dyeName = DyeColor.byId(i).getName().toLowerCase(Locale.ROOT);
 			COMPACT_CHEST_BLOCKS[i] = new RegistryHolder.Blocks("compact_chest_" + dyeName, new FabricCompactChestBlock(BlockBehaviour.Properties.copy(Blocks.CHEST).noOcclusion().strength(2f, 5f)));
 			DYE_COLOR_TO_COMPACT_CHEST_MAP.put(DyeColor.byId(i), COMPACT_CHEST_BLOCKS[i]);
 

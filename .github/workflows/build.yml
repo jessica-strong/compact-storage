@@ -12,12 +12,12 @@ jobs:
     env:
       BUILD_NUMBER: ${{ github.run_number }}
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v3
-      - name: validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: setup jdk
-        uses: actions/setup-java@v3
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: Gradle Wrapper Validation
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.6.0
         with:
           distribution: 'microsoft'
           java-version: '17'
@@ -32,9 +32,9 @@ jobs:
         run: |
           mkdir dist
           cp fabric/build/libs/*.jar dist
-          cp neoforge/build/libs/*.jar dist
-      - name: capture build artifacts
-        uses: actions/upload-artifact@v3
+          cp forge/build/libs/*.jar dist
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.5.0
         with:
           if-no-files-found: error
           path: dist/*
